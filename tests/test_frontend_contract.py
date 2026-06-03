@@ -142,18 +142,30 @@ def test_frontend_has_no_global_message_surface() -> None:
 def test_primary_controls_have_stable_dimensions() -> None:
     styles = styles_source()
 
-    assert "grid-template-columns: repeat(2, 180px)" in styles
+    assert "grid-template-columns: repeat(2, minmax(160px, 1fr))" in styles
     assert ".buttons button" in styles
-    assert "height: 44px" in styles
+    assert "height: clamp(42px, 5vh, 58px)" in styles
     assert "width: 100%" in styles
 
 
-def test_layout_compaction_preserves_metric_cards() -> None:
+def test_layout_uses_fixed_viewport_without_page_scroll() -> None:
     styles = styles_source()
 
-    assert "min-height: 174px" in styles
-    assert "height: 165px" in styles
-    assert "padding: 11px" in styles
+    assert "height: 100dvh" in styles
+    assert "overflow: hidden" in styles
+    assert "grid-template-rows: auto minmax(0, 1fr)" in styles
+
+
+def test_dashboard_scales_to_available_screen_space() -> None:
+    styles = styles_source()
+
+    assert "width: calc(100vw - clamp(16px, 4vw, 72px))" in styles
+    assert "grid-template-rows: minmax(0, 0.9fr) auto minmax(0, 1.3fr)" in styles
+    assert "height: 100%" in styles
+    assert "min-height: 0" in styles
+    assert "padding: clamp(8px, 1.2vw, 18px)" in styles
+    assert "height: 100%" in styles
+    assert "min-height: clamp(150px, 24vh, 360px)" in styles
 
 
 def test_topbar_is_compact() -> None:

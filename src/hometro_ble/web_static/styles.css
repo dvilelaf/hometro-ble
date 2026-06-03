@@ -17,6 +17,12 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -38,9 +44,13 @@ input {
 }
 
 .shell {
-  width: min(1040px, calc(100vw - 32px));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100dvh;
   margin: 0 auto;
-  padding: 10px 0 14px;
+  min-height: 0;
+  padding: clamp(8px, 1.4vh, 18px) 0;
+  width: calc(100vw - clamp(16px, 4vw, 72px));
 }
 
 .topbar {
@@ -243,13 +253,18 @@ h1 {
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
   display: grid;
-  gap: 8px;
+  gap: clamp(8px, 1vw, 14px);
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 11px;
+  grid-template-rows: minmax(0, 0.9fr) auto minmax(0, 1.3fr);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(8px, 1.2vw, 18px);
 }
 
 .speed-chart {
   grid-column: 1 / -1;
+  min-height: clamp(150px, 24vh, 360px);
+  min-width: 0;
 }
 
 .speed-chart canvas {
@@ -257,7 +272,7 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 6px;
   display: block;
-  height: 165px;
+  height: 100%;
   width: 100%;
 }
 
@@ -272,8 +287,8 @@ h1 {
   border-radius: 8px;
   display: grid;
   grid-template-rows: auto 1fr;
-  min-height: 174px;
-  padding: 16px;
+  min-height: 0;
+  padding: clamp(12px, 1.4vw, 22px);
   position: relative;
 }
 
@@ -289,14 +304,14 @@ h1 {
 .metric-grid strong {
   color: var(--ink);
   display: block;
-  font-size: 38px;
+  font-size: clamp(32px, 3.1vw, 56px);
   font-variant-numeric: tabular-nums;
   line-height: 0.95;
   overflow-wrap: anywhere;
 }
 
 .primary-metric strong {
-  font-size: 66px;
+  font-size: clamp(56px, 5.8vw, 112px);
 }
 
 .metric-value > span {
@@ -341,20 +356,23 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 8px;
   grid-column: 1 / -1;
-  padding: 11px;
+  min-height: 0;
+  padding: clamp(8px, 1vw, 16px);
 }
 
 .buttons {
   display: grid;
-  grid-template-columns: repeat(2, 180px);
+  grid-template-columns: repeat(2, minmax(160px, 1fr));
   gap: 8px;
   justify-content: center;
-  margin-bottom: 11px;
+  margin: 0 auto clamp(8px, 1vh, 14px);
+  max-width: 520px;
+  width: min(100%, 520px);
 }
 
 .buttons button {
-  height: 44px;
-  min-height: 44px;
+  height: clamp(42px, 5vh, 58px);
+  min-height: 42px;
   width: 100%;
 }
 
@@ -525,8 +543,41 @@ button:disabled {
     flex: 1;
   }
 
-  .dashboard,
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows:
+      minmax(70px, 0.75fr)
+      minmax(62px, 0.65fr)
+      minmax(62px, 0.65fr)
+      minmax(62px, 0.65fr)
+      auto
+      minmax(150px, 1.4fr);
+    padding: 8px;
+  }
+
   .buttons {
     grid-template-columns: 1fr;
+    max-width: none;
+  }
+
+  .primary-metric,
+  .metric-grid > div {
+    padding: 11px;
+  }
+
+  .primary-metric strong {
+    font-size: clamp(44px, 14vw, 56px);
+  }
+
+  .metric-grid strong {
+    font-size: clamp(30px, 9vw, 38px);
+  }
+
+  .metric-value {
+    align-self: end;
+  }
+
+  .speed-chart {
+    min-height: 150px;
   }
 }
