@@ -5,7 +5,6 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
 
-from .fitshow_oem import FITSHOW_NOTIFY_UUID, FITSHOW_SERVICE_UUID, parse_fitshow_frame
 from .ftms import (
     FITNESS_MACHINE_CONTROL_POINT_UUID,
     FITNESS_MACHINE_STATUS_UUID,
@@ -14,6 +13,7 @@ from .ftms import (
     parse_treadmill_data,
 )
 from .protocol import hex_from_bytes
+from .vendor_oem import OEM_NOTIFY_UUID, OEM_SERVICE_UUID, parse_oem_frame
 
 
 def utc_now() -> str:
@@ -74,7 +74,7 @@ class TreadmillState:
     calories_kcal: int | None = None
     elapsed_s: int | None = None
     ftms_status_hex: str | None = None
-    fitshow_state: str | None = None
+    vendor_state: str | None = None
     last_response: str | None = None
     last_error: str | None = None
     last_event_ts: str | None = None
@@ -200,9 +200,9 @@ class TreadmillState:
         if has_speed:
             self.record_speed_sample()
 
-    def apply_fitshow_frame(self, frame: Any) -> None:
-        self.fitshow_state = frame.state_name
-        if machine_state := FITSHOW_STATE_MAP.get(frame.state_name):
+    def apply_oem_frame(self, frame: Any) -> None:
+        self.vendor_state = frame.state_name
+        if machine_state := OEM_STATE_MAP.get(frame.state_name):
             self.set_observed_machine(machine_state)
         if frame.speed_kmh is not None:
             self.speed_kmh = frame.speed_kmh
@@ -227,12 +227,12 @@ class TreadmillState:
         elif sender_uuid == TREADMILL_DATA_UUID:
             if treadmill_data := parse_treadmill_data(raw):
                 self.apply_treadmill_data(treadmill_data)
-        elif sender_uuid == FITSHOW_NOTIFY_UUID:
-            if frame := parse_fitshow_frame(raw):
-                self.apply_fitshow_frame(frame)
+        elif sender_uuid == OEM_NOTIFY_UUID:
+            if frame := parse_oem_frame(raw):
+                self.apply_oem_frame(frame)
 
 
-FITSHOW_STATE_MAP = {
+OEM_STATE_MAP = {
     "idle": MachineState.IDLE,
     "countdown": MachineState.STARTING,
     "running": MachineState.RUNNING,
@@ -280,8 +280,8 @@ class AdvertisementRecord:
     def is_known_treadmill(self) -> bool:
         services = {normalize_uuid(uuid) for uuid in self.service_uuids}
         names = f"{self.name or ''} {self.local_name or ''}".lower()
-        known_name = any(marker in names for marker in ("fs-", "fitshow", "hometro"))
-        return known_name or FITSHOW_SERVICE_UUID in services
+        known_name = any(marker in names for marker in ("fs-", "hometro"))
+        return known_name or OEM_SERVICE_UUID in services
 
     def to_json(self) -> dict[str, Any]:
         return asdict(self)

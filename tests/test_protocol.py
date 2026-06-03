@@ -1,4 +1,4 @@
-from hometro_fitshow_ble.protocol import (
+from hometro_ble.protocol import (
     append_sum8,
     append_xor8,
     bytes_from_hex,

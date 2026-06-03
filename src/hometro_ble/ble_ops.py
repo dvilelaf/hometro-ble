@@ -9,7 +9,6 @@ from typing import Any
 from bleak import BleakClient, BleakScanner
 
 from .capture import append_jsonl, dump_json
-from .fitshow_oem import FITSHOW_NOTIFY_UUID, parse_fitshow_frame
 from .ftms import (
     FITNESS_MACHINE_CONTROL_POINT_UUID,
     FITNESS_MACHINE_STATUS_UUID,
@@ -33,6 +32,7 @@ from .models import (
 from .protocol import bytes_from_hex, hex_from_bytes
 from .replay import ReplayItem, parse_replay_file
 from .system_ble import known_system_devices
+from .vendor_oem import OEM_NOTIFY_UUID, parse_oem_frame
 
 
 def _sort_advertisements(rows: list[AdvertisementRecord]) -> list[AdvertisementRecord]:
@@ -162,9 +162,9 @@ async def monitor_notifications(
             if sender_uuid == TREADMILL_DATA_UUID:
                 treadmill_data = parse_treadmill_data(raw)
                 decoded = treadmill_data.to_json() if treadmill_data else None
-            elif sender_uuid == FITSHOW_NOTIFY_UUID:
-                fitshow_frame = parse_fitshow_frame(raw)
-                decoded = fitshow_frame.to_json() if fitshow_frame else None
+            elif sender_uuid == OEM_NOTIFY_UUID:
+                oem_frame = parse_oem_frame(raw)
+                decoded = oem_frame.to_json() if oem_frame else None
             event = NotificationEvent(
                 ts=utc_now(),
                 address=address,
@@ -302,7 +302,7 @@ async def run_ftms_session(
                 FITNESS_MACHINE_CONTROL_POINT_UUID,
                 FITNESS_MACHINE_STATUS_UUID,
                 TREADMILL_DATA_UUID,
-                FITSHOW_NOTIFY_UUID,
+                OEM_NOTIFY_UUID,
             }
         ]
 
@@ -324,9 +324,9 @@ async def run_ftms_session(
             elif sender_uuid == TREADMILL_DATA_UUID:
                 treadmill_data = parse_treadmill_data(raw)
                 decoded = treadmill_data.to_json() if treadmill_data else None
-            elif sender_uuid == FITSHOW_NOTIFY_UUID:
-                fitshow_frame = parse_fitshow_frame(raw)
-                decoded = fitshow_frame.to_json() if fitshow_frame else None
+            elif sender_uuid == OEM_NOTIFY_UUID:
+                oem_frame = parse_oem_frame(raw)
+                decoded = oem_frame.to_json() if oem_frame else None
 
             event = NotificationEvent(
                 ts=utc_now(),

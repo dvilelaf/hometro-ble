@@ -41,7 +41,7 @@ Suggested manual script:
 
 ```text
 00s idle
-10s FitShow start
+10s vendor app start
 20s speed 1.0
 30s speed 1.5
 40s speed 2.0
@@ -57,10 +57,10 @@ Passive interception of phone-to-treadmill BLE writes is platform-dependent.
 Good options:
 
 - Android HCI snoop log, then Wireshark
-- Linux host running FitShow-like client code, captured with `btmon`
+- Linux host running OEM-like client code, captured with `btmon`
 - nRF Connect or LightBlue manual writes if the app protocol is simple enough
 
-FitShow on iPhone is useful for behavior comparison, but iOS generally does not
+The vendor iPhone app is useful for behavior comparison, but iOS generally does not
 make third-party app BLE traffic easy to export.
 
 ## 5. Replay carefully

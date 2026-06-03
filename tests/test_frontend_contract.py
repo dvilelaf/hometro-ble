@@ -1,9 +1,9 @@
 import re
 from pathlib import Path
 
-APP_JS = Path("src/hometro_fitshow_ble/web_static/app.js")
-INDEX_HTML = Path("src/hometro_fitshow_ble/web_static/index.html")
-STYLES_CSS = Path("src/hometro_fitshow_ble/web_static/styles.css")
+APP_JS = Path("src/hometro_ble/web_static/app.js")
+INDEX_HTML = Path("src/hometro_ble/web_static/index.html")
+STYLES_CSS = Path("src/hometro_ble/web_static/styles.css")
 
 
 def app_source() -> str:
@@ -233,7 +233,7 @@ def test_notification_button_uses_local_icon_asset() -> None:
 
     assert "icons/bell.svg" in styles
     assert "::before" not in icon_block
-    assert Path("src/hometro_fitshow_ble/web_static/icons/bell.svg").exists()
+    assert Path("src/hometro_ble/web_static/icons/bell.svg").exists()
 
 
 def test_fullscreen_button_uses_local_icons_and_f_key() -> None:
@@ -249,8 +249,8 @@ def test_fullscreen_button_uses_local_icons_and_f_key() -> None:
     assert "!event.ctrlKey" in source
     assert "icons/maximize-2.svg" in styles
     assert "icons/minimize-2.svg" in styles
-    assert Path("src/hometro_fitshow_ble/web_static/icons/maximize-2.svg").exists()
-    assert Path("src/hometro_fitshow_ble/web_static/icons/minimize-2.svg").exists()
+    assert Path("src/hometro_ble/web_static/icons/maximize-2.svg").exists()
+    assert Path("src/hometro_ble/web_static/icons/minimize-2.svg").exists()
 
 
 def test_eventsource_errors_are_user_notifications() -> None:

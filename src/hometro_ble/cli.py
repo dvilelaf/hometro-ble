@@ -234,7 +234,7 @@ def add_optional_connect_args(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="hometro-ble",
-        description="BLE reverse engineering CLI for HomeTro / FitShow treadmills.",
+        description="BLE reverse engineering CLI for HomeTro treadmills.",
     )
     subparsers = parser.add_subparsers(required=True)
 

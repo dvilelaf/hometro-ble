@@ -1,9 +1,9 @@
 import asyncio
 
-import hometro_fitshow_ble.ble_ops as ble_ops
-from hometro_fitshow_ble.fitshow_oem import FITSHOW_SERVICE_UUID
-from hometro_fitshow_ble.ftms import FITNESS_MACHINE_SERVICE_UUID
-from hometro_fitshow_ble.models import AdvertisementRecord
+import hometro_ble.ble_ops as ble_ops
+from hometro_ble.ftms import FITNESS_MACHINE_SERVICE_UUID
+from hometro_ble.models import AdvertisementRecord
+from hometro_ble.vendor_oem import OEM_SERVICE_UUID
 
 
 def advertisement(
@@ -25,16 +25,16 @@ def advertisement(
     )
 
 
-def test_fitshow_ftms_advertisement_is_known_treadmill() -> None:
+def test_oem_ftms_advertisement_is_known_treadmill() -> None:
     record = advertisement(
         local_name="FS-0099C3",
-        service_uuids=[FITNESS_MACHINE_SERVICE_UUID, FITSHOW_SERVICE_UUID],
+        service_uuids=[FITNESS_MACHINE_SERVICE_UUID, OEM_SERVICE_UUID],
     )
 
     assert record.is_known_treadmill()
 
 
-def test_fitshow_name_is_known_treadmill_even_without_services() -> None:
+def test_oem_name_is_known_treadmill_even_without_services() -> None:
     assert advertisement(local_name="FS-0099C3").is_known_treadmill()
 
 

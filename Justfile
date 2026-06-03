@@ -24,9 +24,9 @@ run: _setup
         exit 1; \
     fi; \
     if command -v setsid >/dev/null; then \
-        nohup setsid env PYTHONPATH=src .venv/bin/python -m hometro_fitshow_ble.cli web --host "{{host}}" --port "{{port}}" > "{{logfile}}" 2>&1 < /dev/null & \
+        nohup setsid env PYTHONPATH=src .venv/bin/python -m hometro_ble.cli web --host "{{host}}" --port "{{port}}" > "{{logfile}}" 2>&1 < /dev/null & \
     else \
-        nohup env PYTHONPATH=src .venv/bin/python -m hometro_fitshow_ble.cli web --host "{{host}}" --port "{{port}}" > "{{logfile}}" 2>&1 < /dev/null & \
+        nohup env PYTHONPATH=src .venv/bin/python -m hometro_ble.cli web --host "{{host}}" --port "{{port}}" > "{{logfile}}" 2>&1 < /dev/null & \
     fi; \
     pid="$!"; \
     echo "$pid" > "{{pidfile}}"; \

@@ -2,10 +2,10 @@ import asyncio
 
 import pytest
 
-import hometro_fitshow_ble.controller as controller_module
-from hometro_fitshow_ble.controller import ConnectionState, TreadmillController
-from hometro_fitshow_ble.ftms import TREADMILL_DATA_UUID
-from hometro_fitshow_ble.models import TreadmillState
+import hometro_ble.controller as controller_module
+from hometro_ble.controller import ConnectionState, TreadmillController
+from hometro_ble.ftms import TREADMILL_DATA_UUID
+from hometro_ble.models import TreadmillState
 
 
 class FakeBleakClient:

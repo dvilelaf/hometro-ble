@@ -4,15 +4,15 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any
 
-FITSHOW_NOTIFY_UUID = "0000fff1-0000-1000-8000-00805f9b34fb"
-FITSHOW_SERVICE_UUID = "0000fff0-0000-1000-8000-00805f9b34fb"
-FITSHOW_WRITE_UUID = "0000fff2-0000-1000-8000-00805f9b34fb"
+OEM_NOTIFY_UUID = "0000fff1-0000-1000-8000-00805f9b34fb"
+OEM_SERVICE_UUID = "0000fff0-0000-1000-8000-00805f9b34fb"
+OEM_WRITE_UUID = "0000fff2-0000-1000-8000-00805f9b34fb"
 
 STX = 0x02
 ETX = 0x03
 
 
-class FitShowState(IntEnum):
+class OemState(IntEnum):
     IDLE = 0x00
     COUNTDOWN = 0x02
     RUNNING = 0x03
@@ -20,7 +20,7 @@ class FitShowState(IntEnum):
 
 
 @dataclass(frozen=True)
-class FitShowFrame:
+class OemFrame:
     command: int
     state: int
     checksum_ok: bool
@@ -33,7 +33,7 @@ class FitShowFrame:
     @property
     def state_name(self) -> str:
         try:
-            return FitShowState(self.state).name.lower()
+            return OemState(self.state).name.lower()
         except ValueError:
             return f"unknown_0x{self.state:02x}"
 
@@ -41,7 +41,7 @@ class FitShowFrame:
         return {
             key: value
             for key, value in {
-                "type": "fitshow_oem",
+                "type": "vendor_oem",
                 "command": self.command,
                 "state": self.state_name,
                 "checksum_ok": self.checksum_ok,
@@ -62,7 +62,7 @@ def xor_checksum(data: bytes) -> int:
     return checksum
 
 
-def parse_fitshow_frame(data: bytes) -> FitShowFrame | None:
+def parse_oem_frame(data: bytes) -> OemFrame | None:
     if len(data) < 5 or data[0] != STX or data[-1] != ETX:
         return None
 
@@ -81,10 +81,10 @@ def parse_fitshow_frame(data: bytes) -> FitShowFrame | None:
     distance_m = None
     raw_fields = None
 
-    if state == FitShowState.COUNTDOWN and payload:
+    if state == OemState.COUNTDOWN and payload:
         countdown_s = payload[0]
 
-    if state in (FitShowState.RUNNING, FitShowState.STOPPING) and len(payload) >= 4:
+    if state in (OemState.RUNNING, OemState.STOPPING) and len(payload) >= 4:
         speed_kmh = int.from_bytes(payload[0:2], "little") / 10
         elapsed_s = int.from_bytes(payload[2:4], "little")
         if len(payload) >= 6:
@@ -96,7 +96,7 @@ def parse_fitshow_frame(data: bytes) -> FitShowFrame | None:
                 if index + 2 <= len(payload)
             ]
 
-    return FitShowFrame(
+    return OemFrame(
         command=command,
         state=state,
         checksum_ok=checksum_ok,

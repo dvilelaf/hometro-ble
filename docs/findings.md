@@ -10,7 +10,7 @@ Initial scan identified the treadmill as:
 - manufacturer string: `FITSHOW`
 - services: Heart Rate `180d`, Fitness Machine `1826`, vendor service `fff0`
 
-The treadmill appears to accept one BLE central at a time. FitShow could not
+The treadmill appears to accept one BLE central at a time. The vendor app could not
 discover/connect while the Python monitor was connected, and worked again after
 the monitor disconnected.
 
@@ -21,8 +21,8 @@ Important characteristics:
 - FTMS Treadmill Data: `00002acd-0000-1000-8000-00805f9b34fb`, notify
 - FTMS Fitness Machine Status: `00002ada-0000-1000-8000-00805f9b34fb`, notify
 - FTMS Control Point: `00002ad9-0000-1000-8000-00805f9b34fb`, write + indicate
-- FitShow vendor notify: `0000fff1-0000-1000-8000-00805f9b34fb`
-- FitShow vendor write: `0000fff2-0000-1000-8000-00805f9b34fb`
+- OEM notify: `0000fff1-0000-1000-8000-00805f9b34fb`
+- OEM write: `0000fff2-0000-1000-8000-00805f9b34fb`
 
 Full dump: `captures/gatt-fs-0099c3.json`.
 
@@ -52,7 +52,7 @@ The first speed field is FTMS instantaneous speed in hundredths of km/h:
 
 Distance is present as a 24-bit little-endian value in meters.
 
-## FitShow vendor notify frames
+## OEM notify frames
 
 The vendor notify characteristic mirrors the same state in a compact frame:
 
@@ -106,7 +106,7 @@ FTMS target speed uses hundredths of km/h, little endian:
 
 - `02 64 00` = set target speed to `1.00 km/h`
 
-This means basic open-source control can likely use FTMS first, with the FitShow
+This means basic open-source control can likely use FTMS first, with the OEM
 vendor protocol as a compatibility/diagnostic layer.
 
 Physical behavior was confirmed: after setting target speed to `1.00 km/h`, the

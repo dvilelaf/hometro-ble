@@ -148,7 +148,7 @@ Tests:
 - [x] `pause_toggle` while running sends `08 02`. Covered by `tests/test_control_contract.py`.
 - [x] `pause_toggle` while paused calls play. Covered by `tests/test_control_contract.py`.
 - [x] `stop` sends `08 01` and sets idle. Covered by `tests/test_control_contract.py`.
-- [x] incoming FitShow/FTMS idle after software pause keeps resume available. Covered by `tests/test_control_contract.py`.
+- [x] incoming OEM/FTMS idle after software pause keeps resume available. Covered by `tests/test_control_contract.py`.
 - [x] frontend number key `4` calls speed endpoint and never start endpoint. Covered by `tests/test_frontend_contract.py`.
 - [x] frontend Space calls play or pause-toggle without reading button text. Covered by `tests/test_frontend_contract.py`.
 - [x] SSE render does not fight local DOM state because there is no local DOM state. Frontend only stores latest backend snapshot plus debounce timer.
@@ -170,7 +170,7 @@ Tests:
 
 - [x] `ruff check .`
 - [x] `pytest`
-- [x] `node --check src/hometro_fitshow_ble/web_static/app.js`
+- [x] `node --check src/hometro_ble/web_static/app.js`
 - [x] Confirm no headless Chrome/CDP processes are alive. No Chrome/CDP control process found during audit.
 - [x] Start server. Restarted from `refactor/integration` after the latest commits.
 - [ ] Reload browser with cache bypass. Not done in this audit.
@@ -195,7 +195,7 @@ Current blockers:
 Verification performed:
 
 - [x] `ruff check .` passes.
-- [x] `node --check src/hometro_fitshow_ble/web_static/app.js` passes.
+- [x] `node --check src/hometro_ble/web_static/app.js` passes.
 - [x] No Chrome/CDP control process found.
 - [x] Server process is running from `refactor/integration` after restart.
 - [x] Full test suite is green: `34 passed`.

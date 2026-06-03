@@ -6,7 +6,6 @@ from typing import Any
 
 from bleak import BleakClient
 
-from .fitshow_oem import FITSHOW_NOTIFY_UUID
 from .ftms import (
     FITNESS_MACHINE_CONTROL_POINT_UUID,
     FITNESS_MACHINE_STATUS_UUID,
@@ -20,12 +19,13 @@ from .ftms import (
 from .models import ConnectionState, MachineState, TreadmillState, utc_now
 from .protocol import hex_from_bytes
 from .system_ble import is_system_connected, release_system_connection
+from .vendor_oem import OEM_NOTIFY_UUID
 
 NOTIFY_UUIDS = (
     FITNESS_MACHINE_CONTROL_POINT_UUID,
     FITNESS_MACHINE_STATUS_UUID,
     TREADMILL_DATA_UUID,
-    FITSHOW_NOTIFY_UUID,
+    OEM_NOTIFY_UUID,
 )
 TARGET_RESTORE_ATTEMPTS = 5
 TARGET_RESTORE_INTERVAL_SECONDS = 0.75

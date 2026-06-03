@@ -3,9 +3,9 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "hometro-fitshow-ble"
+name = "hometro-ble"
 version = "0.1.0"
-description = "BLE reverse engineering toolkit for HomeTro / FitShow treadmills."
+description = "BLE reverse engineering toolkit for HomeTro treadmills."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
@@ -24,7 +24,7 @@ dev = [
 ]
 
 [project.scripts]
-hometro-ble = "hometro_fitshow_ble.cli:main"
+hometro-ble = "hometro_ble.cli:main"
 
 [tool.ruff]
 line-length = 100

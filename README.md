@@ -1,6 +1,6 @@
-# HomeTro FitShow BLE
+# HomeTro BLE
 
-A small local web app to control a HomeTro / FitShow treadmill from your browser over Bluetooth LE.
+A small local web app to control a HomeTro treadmill from your browser over Bluetooth LE.
 
 Use it to find and connect to the treadmill, set the target speed, start, pause, resume, stop, and see workout stats like speed, distance, time, and calories.
 

@@ -1,6 +1,6 @@
 """Small protocol helpers for reverse engineering captures.
 
-This module intentionally does not pretend to know the HomeTro/FitShow protocol
+This module intentionally does not pretend to know the HomeTro protocol
 yet. Use it to test common framing/checksum hypotheses against real captures.
 """
 

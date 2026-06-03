@@ -1,4 +1,4 @@
-from hometro_fitshow_ble.ftms import (
+from hometro_ble.ftms import (
     ControlPointResultCode,
     parse_control_point_response,
     parse_treadmill_data,

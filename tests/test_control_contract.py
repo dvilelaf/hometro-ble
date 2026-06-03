@@ -2,10 +2,10 @@ import asyncio
 
 import pytest
 
-import hometro_fitshow_ble.controller as controller_module
-from hometro_fitshow_ble.controller import MachineState, TreadmillController
-from hometro_fitshow_ble.fitshow_oem import FITSHOW_NOTIFY_UUID
-from hometro_fitshow_ble.ftms import FITNESS_MACHINE_STATUS_UUID, TREADMILL_DATA_UUID
+import hometro_ble.controller as controller_module
+from hometro_ble.controller import MachineState, TreadmillController
+from hometro_ble.ftms import FITNESS_MACHINE_STATUS_UUID, TREADMILL_DATA_UUID
+from hometro_ble.vendor_oem import OEM_NOTIFY_UUID
 
 
 class ContractFakeBleakClient:
@@ -279,14 +279,14 @@ def test_stop_sends_stop_and_sets_idle(monkeypatch: pytest.MonkeyPatch) -> None:
     assert state["paused"] is False
 
 
-def test_fitshow_idle_after_pause_keeps_resume_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_oem_idle_after_pause_keeps_resume_available(monkeypatch: pytest.MonkeyPatch) -> None:
     setup_contract_bleak(monkeypatch)
     controller = TreadmillController("66:99:D4:F6:7B:30")
     controller.state.set_machine(MachineState.RUNNING)
 
     async def exercise() -> dict:
         await controller.pause_toggle()
-        controller._handle_notification(FITSHOW_NOTIFY_UUID, bytearray.fromhex("02 51 00 51 03"))
+        controller._handle_notification(OEM_NOTIFY_UUID, bytearray.fromhex("02 51 00 51 03"))
         await asyncio.sleep(0)
         return controller.state.snapshot()
 
@@ -296,7 +296,7 @@ def test_fitshow_idle_after_pause_keeps_resume_available(monkeypatch: pytest.Mon
     assert state["paused"] is True
 
 
-def test_fitshow_running_after_pause_keeps_resume_available(
+def test_oem_running_after_pause_keeps_resume_available(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     setup_contract_bleak(monkeypatch)
@@ -306,7 +306,7 @@ def test_fitshow_running_after_pause_keeps_resume_available(
     async def exercise() -> dict:
         await controller.pause_toggle()
         controller._handle_notification(
-            FITSHOW_NOTIFY_UUID,
+            OEM_NOTIFY_UUID,
             bytearray.fromhex("02 51 03 0a 00 01 00 59 03"),
         )
         await asyncio.sleep(0)

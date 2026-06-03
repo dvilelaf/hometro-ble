@@ -28,7 +28,7 @@ class ConnectRequest(BaseModel):
 
 def create_app(address: str = "", *, timeout: float = 15.0) -> FastAPI:
     controller = TreadmillController(address, timeout=timeout)
-    app = FastAPI(title="HomeTro FitShow BLE")
+    app = FastAPI(title="HomeTro BLE")
 
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 

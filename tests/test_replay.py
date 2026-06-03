@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from hometro_fitshow_ble.replay import parse_replay_file, parse_replay_line
+from hometro_ble.replay import parse_replay_file, parse_replay_line
 
 CHAR_UUID = "0000fff2-0000-1000-8000-00805f9b34fb"
 
