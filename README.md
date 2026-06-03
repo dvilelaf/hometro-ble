@@ -6,15 +6,17 @@ Use it to find and connect to the treadmill, set the target speed, start, pause,
 
 ## Use
 
-From the cloned repo, start the app:
+From the cloned repo, start the app and open the browser:
+
+```bash
+just start
+```
+
+Server-only mode:
 
 ```bash
 just run
 ```
-
-Open:
-
-http://127.0.0.1:8000
 
 When you are done, stop it:
 

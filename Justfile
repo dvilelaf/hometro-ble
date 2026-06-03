@@ -49,6 +49,22 @@ run: _setup
     tail -40 "{{logfile}}" 2>/dev/null || true; \
     exit 1
 
+start:
+    @just run
+    @url="http://{{host}}:{{port}}"; \
+    if [ -n "${HOMETRO_OPEN_CMD:-}" ]; then \
+        read -r -a opener <<< "$HOMETRO_OPEN_CMD"; \
+        "${opener[@]}" "$url"; \
+    elif command -v xdg-open >/dev/null; then \
+        xdg-open "$url" >/dev/null 2>&1 & \
+    elif command -v open >/dev/null; then \
+        open "$url" >/dev/null 2>&1 & \
+    elif command -v wslview >/dev/null; then \
+        wslview "$url" >/dev/null 2>&1 & \
+    else \
+        echo "Open $url"; \
+    fi
+
 stop:
     @pid=""; \
     if [ -f "{{pidfile}}" ]; then \
