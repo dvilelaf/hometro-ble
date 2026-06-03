@@ -139,6 +139,12 @@ def test_frontend_has_no_global_message_surface() -> None:
     assert "message(" not in source
 
 
+def test_metric_cards_are_ordered_by_workout_priority() -> None:
+    labels = re.findall(r'<p class="label">([^<]+)</p>', index_source())
+
+    assert labels[:4] == ["Current speed", "Time", "Distance", "Calories"]
+
+
 def test_primary_controls_have_stable_dimensions() -> None:
     styles = styles_source()
 
