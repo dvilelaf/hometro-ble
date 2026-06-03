@@ -68,3 +68,33 @@ def test_run_ignores_stale_pidfile_when_port_is_not_listening(tmp_path: Path) ->
             sleeper.wait(timeout=1)
         except subprocess.TimeoutExpired:
             sleeper.kill()
+
+
+def test_start_recovers_if_browser_opener_interrupts_server(tmp_path: Path) -> None:
+    port = unused_port()
+    pidfile = tmp_path / "hometro-server.pid"
+    logfile = tmp_path / "hometro-server.log"
+    opener = tmp_path / "opener"
+    opener.write_text("#!/usr/bin/env bash\njust stop >/dev/null 2>&1\n", encoding="utf-8")
+    opener.chmod(0o755)
+    env = {
+        **os.environ,
+        "HOMETRO_PORT": str(port),
+        "HOMETRO_PIDFILE": str(pidfile),
+        "HOMETRO_LOGFILE": str(logfile),
+        "HOMETRO_OPEN_CMD": str(opener),
+    }
+
+    try:
+        result = subprocess.run(
+            ["just", "start"],
+            check=False,
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+
+        assert result.returncode == 0, result.stderr
+        assert wait_for_port(port), result.stdout + result.stderr
+    finally:
+        subprocess.run(["just", "stop"], check=False, capture_output=True, text=True, env=env)

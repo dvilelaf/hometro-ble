@@ -66,6 +66,11 @@ start:
         wslview "$url" >/dev/null 2>&1 & \
     else \
         echo "Open $url"; \
+    fi; \
+    sleep 0.5; \
+    if ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -Eq '(^|:){{port}}$'; then \
+        echo "Server exited after opening the browser; restarting..."; \
+        just run; \
     fi
 
 stop:
