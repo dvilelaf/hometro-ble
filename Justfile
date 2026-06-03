@@ -15,9 +15,12 @@ _setup:
 
 run: _setup
     @if [ -f "{{pidfile}}" ] && kill -0 "$(< "{{pidfile}}")" 2>/dev/null; then \
-        echo "Server already running with PID $(< "{{pidfile}}")"; \
-        echo "http://{{host}}:{{port}}"; \
-        exit 0; \
+        if ss -ltn 2>/dev/null | awk '{print $4}' | grep -Eq '(^|:){{port}}$'; then \
+            echo "Server already running with PID $(< "{{pidfile}}")"; \
+            echo "http://{{host}}:{{port}}"; \
+            exit 0; \
+        fi; \
+        rm -f "{{pidfile}}"; \
     fi; \
     if ss -ltn 2>/dev/null | awk '{print $4}' | grep -Eq '(^|:){{port}}$'; then \
         echo "Port {{port}} is already in use. Run just stop or set HOMETRO_PORT."; \
