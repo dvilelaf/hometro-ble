@@ -210,3 +210,24 @@ def test_slowdown_notification_below_command_minimum_is_allowed(
 
     assert controller.state.speed_kmh == 0.6
     assert controller.state.target_speed_kmh == 4.0
+
+
+def test_connect_to_records_successful_device(monkeypatch: pytest.MonkeyPatch):
+    setup_fake_bleak(monkeypatch, fail_attempts=0)
+    saved: list[str] = []
+    controller = TreadmillController("66:99:D4:F6:7B:30", on_connected=saved.append)
+
+    asyncio.run(controller.connect_to("66:99:D4:F6:7B:30"))
+
+    assert saved == ["66:99:D4:F6:7B:30"]
+
+
+def test_connect_to_does_not_record_failed_device(monkeypatch: pytest.MonkeyPatch):
+    setup_fake_bleak(monkeypatch, fail_attempts=2)
+    saved: list[str] = []
+    controller = TreadmillController("66:99:D4:F6:7B:30", on_connected=saved.append)
+
+    with pytest.raises(RuntimeError, match="bluez stale connection"):
+        asyncio.run(controller.connect_to("66:99:D4:F6:7B:30"))
+
+    assert saved == []

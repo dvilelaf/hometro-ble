@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 from collections.abc import AsyncIterator
 from pathlib import Path
@@ -12,8 +13,10 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from . import known_devices
 from .ble_ops import scan_devices
 from .controller import TreadmillController
+from .models import utc_now
 
 STATIC_DIR = Path(__file__).with_name("web_static")
 
@@ -27,8 +30,12 @@ class ConnectRequest(BaseModel):
 
 
 def create_app(address: str = "", *, timeout: float = 15.0) -> FastAPI:
-    controller = TreadmillController(address, timeout=timeout)
+    def remember_connected(connected_address: str) -> None:
+        known_devices.save_last_connected(connected_address)
+
+    controller = TreadmillController(address, timeout=timeout, on_connected=remember_connected)
     app = FastAPI(title="HomeTro BLE")
+    app.state.controller = controller
 
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
@@ -70,11 +77,37 @@ def create_app(address: str = "", *, timeout: float = 15.0) -> FastAPI:
     async def events() -> StreamingResponse:
         return StreamingResponse(_event_stream(controller), media_type="text/event-stream")
 
+    @app.on_event("startup")
+    async def startup() -> None:
+        asyncio.create_task(autoconnect(controller))
+
     @app.on_event("shutdown")
     async def shutdown() -> None:
         await controller.disconnect(stop_first=True)
 
     return app
+
+
+async def autoconnect(controller: TreadmillController, *, scan_timeout: float = 2.0) -> None:
+    try:
+        if controller.address:
+            await controller.connect()
+            return
+
+        saved = known_devices.load_last_connected()
+        if saved:
+            await controller.connect_to(saved.address)
+            return
+
+        rows = await scan_devices(timeout=scan_timeout)
+        candidates = [row for row in rows if row.address and row.is_known_treadmill()]
+        if len(candidates) == 1 and candidates[0].address:
+            await controller.connect_to(candidates[0].address)
+    except Exception as exc:
+        controller.state.last_error = f"autoconnect failed: {exc}"
+        controller.state.last_event_ts = utc_now()
+        with contextlib.suppress(Exception):
+            await controller._publish()
 
 
 async def _call(operation) -> dict:

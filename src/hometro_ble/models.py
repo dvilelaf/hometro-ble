@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import UTC, datetime
-from enum import StrEnum
+from datetime import datetime, timezone
+try:
+    from enum import StrEnum
+except ImportError:  # Python 3.10 compatibility for the local test environment.
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
 from typing import Any
 
 from .ftms import (
@@ -17,7 +23,7 @@ from .vendor_oem import OEM_NOTIFY_UUID, OEM_SERVICE_UUID, parse_oem_frame
 
 
 def utc_now() -> str:
-    return datetime.now(UTC).isoformat(timespec="milliseconds")
+    return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
 
 
 def bytes_map_to_json(data: dict[Any, bytes] | None) -> dict[str, str]:

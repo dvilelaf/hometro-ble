@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+from collections.abc import Callable
 from typing import Any
 
 from bleak import BleakClient
@@ -32,9 +33,16 @@ TARGET_RESTORE_INTERVAL_SECONDS = 0.75
 
 
 class TreadmillController:
-    def __init__(self, address: str = "", *, timeout: float = 15.0) -> None:
+    def __init__(
+        self,
+        address: str = "",
+        *,
+        timeout: float = 15.0,
+        on_connected: Callable[[str], None] | None = None,
+    ) -> None:
         self.address = address
         self.timeout = timeout
+        self._on_connected = on_connected
         self.state = TreadmillState(address=address)
         self._client: BleakClient | None = None
         self._notify_chars: list[str] = []
@@ -103,7 +111,10 @@ class TreadmillController:
                 self.state = TreadmillState(address=address)
                 await self._publish()
 
-        return await self.connect()
+        state = await self.connect()
+        if self._on_connected:
+            self._on_connected(self.address)
+        return state
 
     async def disconnect(self, *, stop_first: bool = True) -> dict[str, Any]:
         async with self._operation_lock, self._lock:
