@@ -419,6 +419,12 @@ document.addEventListener("keydown", (event) => {
   } else if (event.key.toLowerCase() === "f" && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
     toggleFullscreen().catch(report);
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    setSpeed(clampSpeed(Number(els.speedInput.value) + 1)).catch(report);
+  } else if (event.key === "ArrowDown") {
+    event.preventDefault();
+    setSpeed(clampSpeed(Number(els.speedInput.value) - 1)).catch(report);
   } else if (/^[0-9]$/.test(event.key)) {
     event.preventDefault();
     setSpeed(event.key === "0" ? 10 : Number(event.key)).catch(report);
